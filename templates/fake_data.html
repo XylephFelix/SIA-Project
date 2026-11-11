@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Fake Data - SIA Project{% endblock %}
+{% block container_class %}container-wide{% endblock %}
+{% block content %}
+    <div class="nav">
+        <h2>Fake Data Records</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <form method="GET" action="{{ url_for('view_fake_data') }}" style="display: flex; width: 100%; gap: 10px;">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Search by Name, Email, Job, Company..." style="flex-grow: 1; padding: 10px; border-radius: 5px; border: 1px solid #444; background: #2a2a2a; color: white;">
+            <button type="submit" style="width: auto; padding: 10px 20px;">Search</button>
+            {% if search_query %}
+                <a href="{{ url_for('view_fake_data') }}" style="text-decoration: none;">
+                    <button type="button" style="width: auto; padding: 10px 20px; background: #555; color: white;">Clear</button>
+                </a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if records %}
+        <div style="margin-bottom: 20px;">
+            <form method="POST" action="{{ url_for('delete_all_fake_data_route') }}" style="display: inline;">
+                <button type="submit" style="width: auto; padding: 10px 20px; background: #ff5252; color: white;" onclick="return confirm('Are you sure you want to delete ALL records?')">Delete All Records</button>
+            </form>
+            <p style="display: inline; margin-left: 10px; color: #aaa;">Found {{ records|length }} record(s)</p>
+        </div>
+        
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Address</th><th>Birthdate</th><th>Mobile</th>
+                        <th>Email</th><th>Job</th><th>Company</th><th>Credit Card</th><th>Website</th><th>Username</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record[0] }}</td><td>{{ record[1] }}</td><td>{{ record[2] }}</td>
+                        <td>{{ record[3] }}</td><td>{{ record[4] }}</td><td>{{ record[5] }}</td>
+                        <td>{{ record[6] }}</td><td>{{ record[7] }}</td><td>{{ record[8] }}</td>
+                        <td>{{ record[9] }}</td><td>{{ record[10] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('delete_fake_data', id=record[0]) }}" style="display: inline;">
+                                <button type="submit" style="width: auto; padding: 5px 10px; background: #ff5252; color: white; font-size: 12px;" onclick="return confirm('Delete this record?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p style="text-align: center; color: #aaa; margin-top: 20px;">No records found. Try a different search or generate new data.</p>
+    {% endif %}
+{% endblock %}
